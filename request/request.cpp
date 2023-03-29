@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:05:21 by aoumad            #+#    #+#             */
-/*   Updated: 2023/03/27 22:22:36 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/03/28 21:44:51 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ const std::string  supported_encodings[] =
 
 request::request()
 {
+    return ;
+}
+
+request::request(std::string request)
+{
+    this->parse_request(request);
     return ;
 }
 
@@ -134,7 +140,10 @@ void request::parse_request(std::string request)
     // Parse the request line
     std::istringstream request_line(lines[0]);
     request_line >> this->_method >> this->_uri >> this->_version;
-
+    // i need to call a function to check if the request line content is suitable or not
+    if (!ft_check_request_line(this->_method, this->_uri, this->_version))
+        throw std::runtime_error("Invalid request line");
+    
     // Parse the headers
     for (std::vector<std::string>::const_iterator it = lines.begin() + 1; it != lines.end(); ++it)
     {
@@ -190,18 +199,6 @@ void request::parse_request(std::string request)
     }
 }
 
-/*
-example of the request message:
-POST /index.html HTTP/1.1
-Host: example.com
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*\/*;q=0.8
-Accept-Language: en-US,en;q=0.8
-Content-Length: 11
-Connection: keep-alive
-
-This is the request body.
-*/
 
 void    request::handle_chunked_encoding(std::string &body)
 {
@@ -224,5 +221,28 @@ void    request::handle_chunked_encoding(std::string &body)
 
 void    request::handle_gzip_encoding(std::string &body)
 {
-    
+    std::cerr << "Unsupport gzip encoding" << std::endl;
 }
+
+void    request::handle_compress_encoding(std::string &body)
+{
+    std::cerr << "Unsupport compress encoding" << std::endl;
+}
+
+void    request::handle_deflate_encoding(std::string &body)
+{
+    std::cerr << "Unsupport deflate encoding" << std::endl;
+}
+
+/*
+example of the request message:
+POST /index.html HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*\/*;q=0.8
+Accept-Language: en-US,en;q=0.8
+Content-Length: 11
+Connection: keep-alive
+
+This is the request body.
+*/
