@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 18:00:51 by aoumad            #+#    #+#             */
-/*   Updated: 2023/03/27 14:20:09 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/03/28 21:44:41 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/socket.h>
+# include <zlib.h>
+
 
 class request
 {
@@ -37,6 +39,7 @@ class request
 
     public:
         request();
+        request(std::string request);
         request(const request &src);
         ~request();
         
@@ -65,5 +68,7 @@ class request
         void handle_deflate_encoding(std::string &body);
         void handle_gzip_encoding(std::string &body);
 };
+
+int    ft_check_request_line(std::string method, std::string uri, std::string version);
 
 #endif
