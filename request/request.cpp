@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:05:21 by aoumad            #+#    #+#             */
-/*   Updated: 2023/03/28 21:44:51 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/03/30 02:24:17 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void request::parse_request(std::string request)
     // i need to call a function to check if the request line content is suitable or not
     if (!ft_check_request_line(this->_method, this->_uri, this->_version))
         throw std::runtime_error("Invalid request line");
-    
+    ft_find_query();
     // Parse the headers
     for (std::vector<std::string>::const_iterator it = lines.begin() + 1; it != lines.end(); ++it)
     {
@@ -154,6 +154,32 @@ void request::parse_request(std::string request)
         value.erase(value.find_last_not_of(" \t") + 1);
         this->_headers[key] = value;
     }
+
+    // function that checks if the request is POST or PUT to see if there is no content-length to return error
+    if (ft_check_content_length() == false || ft_check_content_type() == false)
+    {
+        throw std::runtime_error("Invalid Content-Length or Content-Type");
+        exit(1);
+    }
+    // function that checks if the header `connexion` exists or not
+    int rtn = ft_check_connexion();
+    if (rtn != 1)
+    {
+        if (rtn == 2)
+            throw std::runtime_error("Invalid Connexion header");
+        else
+            throw std::runtime_error("Missing Connexion header");
+    }
+
+    // function that will parse the port from the host 
+    // and check if the host is valid or not
+    if (this->get_header("Host") == "")
+    {
+        throw std::runtime_error("Invalid Host header");
+        exit(1);
+    }
+    ft_parse_port(this->get_header("Host"));
+    ft_parse_language_charset();
 
     // Parse the request body
     std::string content_len_str = this->get_header("Content-Length");
@@ -196,6 +222,13 @@ void request::parse_request(std::string request)
             }
             
         }
+    }
+    else
+    {
+        if (this->_headers.find("Content-Length") != this->_headers.end() || this->_method == "POST" || this->_method == "PUT"
+            || this->_headers.find("Content-Type") != this->_headers.end())
+            throw std::runtime_error("Body request is missing");
+        
     }
 }
 
@@ -241,8 +274,9 @@ Host: example.com
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*\/*;q=0.8
 Accept-Language: en-US,en;q=0.8
+Accept-Charset: iso-8859-5, unicode-1-1;q=0.8
 Content-Length: 11
 Connection: keep-alive
 
 This is the request body.
-*/
+*/`

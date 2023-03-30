@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 18:00:51 by aoumad            #+#    #+#             */
-/*   Updated: 2023/03/28 21:44:41 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/03/30 02:33:35 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ class request
         std::string _version; // stores the http version of the request (e.g "HTTP/1.1")
         std::map<std::string, std::string> _headers; // stores the HTTP headers of the request. Each header is stored as a key-value as the value.
         std::string _body; // stores the body of the request
+        std::map<std::string, std::string> _language;
+        std::map<std::string, std::string> _charset;
+        int         _port;
+        std::string _query;
 
     public:
         request();
@@ -49,6 +53,7 @@ class request
         std::string get_uri() const;
         std::string get_version() const;
         std::string get_body() const;
+        // int     ft_get_port() const;
 
         void set_method(std::string method);
         void set_uri(std::string uri);
@@ -63,12 +68,18 @@ class request
 
         typedef void (request::*encoding_handler)(std::string &body);
 
-        void handle_chunked_encoding(std::string &body);
-        void handle_compress_encoding(std::string &body);
-        void handle_deflate_encoding(std::string &body);
-        void handle_gzip_encoding(std::string &body);
+        void    handle_chunked_encoding(std::string &body);
+        void    handle_compress_encoding(std::string &body);
+        void    handle_deflate_encoding(std::string &body);
+        void    handle_gzip_encoding(std::string &body);
+        void    ft_parse_port(std::string host);
+        int     ft_check_content_length();
+        int     ft_check_connexion();
+        int     ft_check_content_type();
+        void    ft_find_query();
+        void    ft_parse_language_charset();
 };
 
-int    ft_check_request_line(std::string method, std::string uri, std::string version);
+int     ft_check_request_line(std::string method, std::string uri, std::string version);
 
 #endif
