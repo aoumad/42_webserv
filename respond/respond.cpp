@@ -1,4 +1,4 @@
-#include "respond.h"
+#include "respond.hpp"
 
 /* GET:
 HTTP/1.1 200 OK
@@ -32,7 +32,7 @@ Respond::Respond()
 {
     _http_method = "";
     _http_version = "HTTP/1.1";
-    response_body = "";
+    _response_body = "";
 }
 
 Respond::~Respond()
@@ -54,12 +54,18 @@ std::string Respond::get_response(std::string http_method, std::string request_p
     {
         response = "HTTP/1.1" + " " + status_code(501) + "\r\n";
         response += "Content-Type: text/html\r\n";
-        response += "Content-Length: " + std::to_string(response_body.length()) + "\r\n";
+        response += "Content-Length: " + std::to_string(_response_body.length()) + "\r\n";
         response += "\r\n";
     }
 
-    headers.erase("Content-Length"); // remove Content-Length header if it exists
-    headers["Content-Length"] = std::to_string(response_body.length()); // add Content-Length header
+    _headers.erase("Content-Length"); // remove Content-Length header if it exists
+    _headers["Content-Length"] = std::to_string(_response_body.length()); // add Content-Length header
 
+    // add _headers to response
+
+}
+
+std::string Respond::handle_get_request(std::string request_path)
+{
     
 }

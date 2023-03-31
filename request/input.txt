@@ -39,3 +39,7 @@ I need to compare the content length if existed with the body request
 + after parsing the config file i need to compare a certain thing of it with the body request also
 
 #/******************************************************************/
+
+request_path is the portion of the URL that comes after the domain name and the optional port number, and it identifies the specific resource being requested.
+
+For example, if the URL requested is http://example.com/path/to/file.html, then the request_path string would be /path/to/file.html.

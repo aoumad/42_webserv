@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <fstream>
 
 class Respond
 {
@@ -26,7 +27,7 @@ class Respond
     public:
         Respond();
         ~Respond();
-        std::string get_response(std::String request_path, std::string http_method);
+        std::string get_response(std::string request_path, std::string http_method);
 };
 
 #endif
