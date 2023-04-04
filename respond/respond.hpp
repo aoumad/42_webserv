@@ -28,6 +28,8 @@ class Respond
         Respond();
         ~Respond();
         std::string get_response(std::string request_path, std::string http_method);
+        std::string get_response_status(int status_code);
+        std::string get_mime_type(std::string file_extension);
 };
 
 #endif
