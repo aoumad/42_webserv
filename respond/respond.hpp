@@ -13,8 +13,10 @@ class Respond
     private:
         std::string _http_method;
         std::string _http_version;
-        std::string _http_path;
+        std::string _location_path;
         std::string _response_body;
+        std::string _cgi_path;
+
         std::map<std::string, std::string> _headers;
 
         std::string get_file_contents(std::string path);

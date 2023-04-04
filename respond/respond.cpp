@@ -33,6 +33,8 @@ Respond::Respond()
     _http_method = "";
     _http_version = "HTTP/1.1";
     _response_body = "";
+    _cgi_path = "";
+    _location_path = "";
 }
 
 Respond::~Respond()
