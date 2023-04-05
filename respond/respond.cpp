@@ -49,7 +49,7 @@ std::string Respond::get_response(std::string http_method, std::string request_p
     else if (http_method == "POST")
         response = handle_post_request(request_path);
     else if (http_method == "PUT")
-        response = handle_put_request(request_path):
+        response = handle_put_request(request_path);
     else if (http_method == "DELETE")
         response = handle_delete_request(request_path);
     else
@@ -69,5 +69,4 @@ std::string Respond::get_response(std::string http_method, std::string request_p
 
 std::string Respond::handle_get_request(std::string request_path)
 {
-    
 }
