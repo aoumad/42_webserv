@@ -118,3 +118,19 @@ i need to handle the Allow in the respond
 
 #/******************************************************************/
 
+init headers of response
+
+	_headers["Allow"] = "";
+	_headers["Content-Language"] = "";
+	_headers["Content-Length"] = "0";
+	_headers["Content-Location"] = "";
+	_headers["Content-Type"] = "";
+	_headers["Date"] = "";
+	_headers["Last-Modified"] = "";
+	_headers["Connection"] = "";
+	_headers["Location"] = "";
+	_headers["Retry-After"] = "";
+	_headers["Server"] = "Webserv";
+	_headers["Transfer-Encoding"] = "identity";
+	_headers["WwwAuthenticate"] = "";
+	_headers["Set-Cookie"] = "";
