@@ -6,7 +6,11 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/04/11 18:30:41 by aoumad           ###   ########.fr       */
+=======
+/*   Updated: 2023/04/12 19:49:51 by aoumad           ###   ########.fr       */
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +37,7 @@ std::string Respond::handle_get_response()
     // step 5: check if the autoindex if on or off
     ft_handle_autoindex();
     
+<<<<<<< HEAD
     // ft_handle_error(404);
     
     return ("");
@@ -135,4 +140,9 @@ void    Respond::ft_handle_delete_response()
         set_header("Content-Length", std::to_string(_response_body.length()));
         set_header("Connection", "keep-alive");
     }
+=======
+    ft_handle_error(404);
+    
+    return ("");
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 }

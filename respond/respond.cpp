@@ -25,8 +25,11 @@ Respond::Respond()
     _is_autoindex = "";
     _is_redirection = false;
     _is_index = false;
+<<<<<<< HEAD
     _boundary = r.get_header("Content-Type").substr(r.get_header("Content-Type").find("boundary=") + 9);
     _upload_store = "";
+=======
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 }
 
 Respond::~Respond()
@@ -199,7 +202,11 @@ void  Respond::ft_parse_location(request &r)
     std::string::size_type pos = path.find(".");
     if (pos != std::string::npos)
     {
+<<<<<<< HEAD
         std::string extension = ".*" + path.substr(pos);
+=======
+        std::string extension = "." + path.substr(pos);
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
         for (int i = 0; i < server.size(); i++)
         {
             for (int j = 0; j < server[i]._location.size(); j++)

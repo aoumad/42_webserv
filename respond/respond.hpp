@@ -40,8 +40,11 @@ class Respond
         std::string _path_found;
         std::string _rooted_path;
         std::string _is_autoindex;
+<<<<<<< HEAD
         std::string _boundary;
         std::string _upload_store;
+=======
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 
         bool        _is_cgi;
         bool        _is_allowed_method;
@@ -50,8 +53,15 @@ class Respond
 
         std::string handle_get_response();
         std::string handle_post_response();
+<<<<<<< HEAD
         std::string handle_delete_response();
 
+=======
+        std::string handle_put_response();
+        std::string handle_delete_response();
+        std::string handle_head_response();
+        
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
         std::string get_file_content(std::string path);
         std::string get_file_content(std::string path, std::string file);
         std::string get_directory_content(std::string path);
@@ -105,6 +115,7 @@ class Respond
         void        ft_handle_index();
         void        ft_handle_index_2();
         void        ft_show_autoindex();
+<<<<<<< HEAD
 
         // POST RESPONSE
         std::string check_post_type();
@@ -122,6 +133,12 @@ class Respond
         // DELETE RESPONSE
 
         void        cout_respond();
+=======
+        
+        // ERROR RESPONSE
+        void        ft_handle_error(int error_code);
+        std::string handle_error(int error_code, std::string error_message);
+>>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 };
 
 #endif
