@@ -6,11 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-<<<<<<< HEAD
 /*   Updated: 2023/04/11 18:30:41 by aoumad           ###   ########.fr       */
-=======
-/*   Updated: 2023/04/12 19:49:51 by aoumad           ###   ########.fr       */
->>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +33,6 @@ std::string Respond::handle_get_response()
     // step 5: check if the autoindex if on or off
     ft_handle_autoindex();
     
-<<<<<<< HEAD
     // ft_handle_error(404);
     
     return ("");
@@ -59,8 +54,6 @@ std::string Respond::handle_post_response()
 
 void    Respond::handle_form_data()
 {
-    std::vector<std::string>   file = r.get_body();
-    std::vector<std::string>::iterator  file_it = file.begin();
     struct stat st;
     if (get_upload_store() == false || server.get_upload == "off")
         return ;
@@ -69,9 +62,20 @@ void    Respond::handle_form_data()
     // {
 
     // }
-    while (file_it != file.end())
-    {
 
+    std::stringstream body(r.get_body());
+    std::string data;
+
+    while (getline(body, data, _boundary)) // Read from the stringstream until the next boundary
+    {
+        if (data.empty())
+            break;
+        if (data.find("Content-Type:") != std::string::npos)
+        {
+            // the data between the boundaries contains a content type
+
+            
+        }
     }
 }
 
@@ -140,9 +144,4 @@ void    Respond::ft_handle_delete_response()
         set_header("Content-Length", std::to_string(_response_body.length()));
         set_header("Connection", "keep-alive");
     }
-=======
-    ft_handle_error(404);
-    
-    return ("");
->>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 }

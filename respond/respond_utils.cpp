@@ -6,11 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-<<<<<<< HEAD
 /*   Updated: 2023/04/12 19:49:02 by aoumad           ###   ########.fr       */
-=======
-/*   Updated: 2023/04/12 22:48:20 by aoumad           ###   ########.fr       */
->>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +30,6 @@ void    Respond::ft_handle_redirection()
 
 void    Respond::ft_handle_cgi()
 {
-<<<<<<< HEAD
-=======
-    
->>>>>>> 85c4c3308030418dfb523ea967313f42b86e517c
 }
 
 int    ft_check_file()
