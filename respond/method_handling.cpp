@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/11 18:30:41 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/27 18:01:24 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,21 +63,56 @@ void    Respond::handle_form_data()
 
     // }
 
+    size_t  pos;
     std::stringstream body(r.get_body());
     std::string data;
+    std::vector<FormData> form_fields;
 
-    while (getline(body, data, _boundary)) // Read from the stringstream until the next boundary
+    while (true)
     {
+        std::getline(body, data);
         if (data.empty())
-            break;
-        if (data.find("Content-Type:") != std::string::npos)
-        {
-            // the data between the boundaries contains a content type
-
-            
-        }
+            break ;
     }
+
+    if (data.find("Content-Type: ") != std::string::npos)
+    {
+        FormData field;
+        field.content_type = data.substr(data.find("Content-Type: ") + 14);
+        field.content_type.erase(field.content_type.find("\r\n\r\n"));
+        
+    }
+
 }
+
+/*
+    while (std::getline(body, line))
+    {
+        if (!line.empty())
+            if (line.find("name=") != std::string::npos)
+            {
+                size_t start = line.find("name=") + 6;
+                size_t end = line.find("\"", start);
+                std::string form_name = line.substr(start, end - start);
+                std::string file_name;
+                if ((pos = line.find("filename=")) != std::string::npos)
+                {
+                    start = line.find("filename=") + 10;
+                    end = line.find("\"", start);
+                    file_name = line.substr(start, end - start);
+                }
+                else if (line.find("Content-Type: ") != std::string::npos)
+                {
+                    _content_type = line.substr(line.find("Content-Type: ") + 14);
+                    _content_type.erase(_content_type.find("\r\n\r\n"));
+
+                    // Read the next line (which contains the form data)
+                    std::getline(body, data);
+                    
+                }
+            }
+    }
+*/
 
 int Respond::get_upload_store()
 {

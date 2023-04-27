@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/12 19:49:02 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/26 17:05:16 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void    Respond::ft_handle_redirection()
 
 void    Respond::ft_handle_cgi()
 {
+    
 }
 
 int    ft_check_file()
