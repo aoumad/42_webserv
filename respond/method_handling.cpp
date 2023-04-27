@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/27 18:01:24 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/27 20:11:56 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,25 @@ void    Respond::handle_form_data()
         field.content_type = data.substr(data.find("Content-Type: ") + 14);
         field.content_type.erase(field.content_type.find("\r\n\r\n"));
         
+        std::string instance_form;
+        while (true)
+        {
+            std::getline(body, data);
+            if (data.find(_boundary) != std::string::npos 
+                && data.find("\r\n") != std::string::npos)
+                break ;
+        }
+        
+        instance_form += data + "\n";
+        
+        field.data = instance_form;
+        field.name = field.name;
+        form_fields.push_back(field);
     }
-
+    else
+    {
+        
+    }
 }
 
 /*
