@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/27 20:11:56 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/28 16:57:16 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ std::string Respond::handle_post_response()
 void    Respond::handle_form_data()
 {
     struct stat st;
-    if (get_upload_store() == false || server.get_upload == "off")
+    if (get_upload_store() == false || server.get_upload() == "off")
         return ;
     _rooted_path.append(_upload_store);
     // if (stat(_rooted_path.c_str(), &st != 0))
@@ -63,43 +63,60 @@ void    Respond::handle_form_data()
 
     // }
 
-    size_t  pos;
-    std::stringstream body(r.get_body());
-    std::string data;
-    std::vector<FormData> form_fields;
+    // Find the first boundary
+    size_t  pos = r.get_body().find(_boundary);
+    if (pos == std::string::npos)
+        return ;
 
+    // Loop through the form data, locating boundaries and reading data betweem them
     while (true)
     {
-        std::getline(body, data);
-        if (data.empty())
-            break ;
+        // find the next boundary
+        size_t  next = r.get_body().find(_boundary, pos + _boundary.length());
+        if (next == std::string::npos)
+            break;
+        
+        // Read the data between the boundaries
+        FormData formData = read_form_data(next);
+        if (formData.isValid())
+            _form_data.push_back(formData); // Add the form data to the list
     }
+}
 
-    if (data.find("Content-Type: ") != std::string::npos)
-    {
-        FormData field;
-        field.content_type = data.substr(data.find("Content-Type: ") + 14);
-        field.content_type.erase(field.content_type.find("\r\n\r\n"));
-        
-        std::string instance_form;
-        while (true)
-        {
-            std::getline(body, data);
-            if (data.find(_boundary) != std::string::npos 
-                && data.find("\r\n") != std::string::npos)
-                break ;
-        }
-        
-        instance_form += data + "\n";
-        
-        field.data = instance_form;
-        field.name = field.name;
-        form_fields.push_back(field);
-    }
-    else
-    {
-        
-    }
+// Helper function to locate the next boundary in the form data
+size_t Response::find_boundary(size_t pos)
+{
+    return (r.get_body().find(_boundary, pos));
+}
+
+// Helper function to read the form data between two boundaries
+Response::FormData Response::read_form_data(size_t pos)
+{
+    FormData form_data;
+    size_t   end_pos;
+
+    // Read the first line (should be the form name)
+    end_pos = r.get_body().find("\r\n", pos);
+    if (end_pos == std::string::npos)
+        return (form_data); // Invalid form data
+    form_data.name = r.get_body().substr(pos, end_pos - pos);
+    
+    // Read the second line line (should be the content type)
+    pos = end_pos + 2;
+    end_pos = r.get_body().find("\r\n\r\n", pos);
+    if (end_pos == std::string::npos)
+        return (form_data); // Invalid form data
+
+    form_data.content_type = r.get_body().substr(pos, end_pos - pos);
+
+    // Read the data (everything after the content type)
+    pos = end_pos + 4;
+    end_pos = find_boundary(pos);
+    if (end_pos == std::string::npos)
+        return (form_data); // Invalid form data
+        _form_data.data = r.get_body().substr(pos, end_pos - pos - 2);
+    
+    return (form_data);
 }
 
 /*

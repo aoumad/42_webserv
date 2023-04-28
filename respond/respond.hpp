@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 20:49:15 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/27 17:52:07 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/28 17:01:22 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,41 +27,8 @@
 # include <errno.h>
 # include "../request/request.hpp"
 # include "../prs_rsc/server.hpp"
-# include "form_data.hpp"
 class Respond
 {
-    private:
-        std::map<std::string, std::string> _headers;
-        std::string _response_body;
-        std::string _http_version;
-        std::string _status_code;
-        std::string _status_message;
-        std::string _document_root;
-        size_t      _location;
-        std::string _path_found;
-        std::string _rooted_path;
-        std::string _is_autoindex;
-        std::string _boundary;
-        std::string _upload_store;
-        std::string _content_type;
-
-        bool        _is_cgi;
-        bool        _is_allowed_method;
-        bool        _is_redirection;
-        bool        _is_index;
-
-        std::string handle_get_response();
-        std::string handle_post_response();
-        std::string handle_delete_response();
-
-        std::string get_file_content(std::string path);
-        std::string get_file_content(std::string path, std::string file);
-        std::string get_directory_content(std::string path);
-        std::string get_error_content(std::string error_code);
-        std::string get_error_content(std::string error_code, std::string error_message);
-        
-        request& r;
-        server& server;
     public:
         Respond();
         ~Respond();
@@ -113,6 +80,7 @@ class Respond
         void        handle_post_response();
         void        handle_form_data();
         int         get_upload_store();
+        size_t      find_boundary(size_t pos);
 
 
         // DELETE RESPONSE
@@ -124,6 +92,53 @@ class Respond
         // DELETE RESPONSE
 
         void        cout_respond();
+
+    class FormData
+    {
+        public:
+            std::string name;
+            std::string content_type;
+            std::string data;
+            std::string file_name;
+
+            bool isValid() const
+            {
+                return (!name.empty() && !data.empty());
+            }
+    };
+    private:
+        std::map<std::string, std::string> _headers;
+        std::string _response_body;
+        std::string _http_version;
+        std::string _status_code;
+        std::string _status_message;
+        std::string _document_root;
+        size_t      _location;
+        std::string _path_found;
+        std::string _rooted_path;
+        std::string _is_autoindex;
+        std::string _boundary;
+        std::string _upload_store;
+        std::string _content_type;
+        std::vector<FormData> _form_data;
+
+        bool        _is_cgi;
+        bool        _is_allowed_method;
+        bool        _is_redirection;
+        bool        _is_index;
+
+        std::string handle_get_response();
+        std::string handle_post_response();
+        std::string handle_delete_response();
+
+        std::string get_file_content(std::string path);
+        std::string get_file_content(std::string path, std::string file);
+        std::string get_directory_content(std::string path);
+        std::string get_error_content(std::string error_code);
+        std::string get_error_content(std::string error_code, std::string error_message);
+
+        request& r;
+        server& server;
 };
 
 #endif
