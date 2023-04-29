@@ -6,13 +6,13 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 13:03:50 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/29 15:44:13 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "respond.hpp"
 
-std::string Respond::handle_get_response()
+void    Respond::handle_get_response()
 {
     // step 1: checking if it's a redirection
     if (_is_redirection == true)
@@ -35,10 +35,9 @@ std::string Respond::handle_get_response()
     
     // ft_handle_error(404);
     
-    return ("");
 }
 
-std::string Respond::handle_post_response()
+void    Respond::handle_post_response()
 {
     if (check_post_type() == "application/x-www-form-urlencoded" && _is_cgi == true)
     {
@@ -210,7 +209,7 @@ void    Respond::ft_handle_delete_response()
         {
             _status_code = "200";
             _status_message = get_response_status(_status_code);
-            set_response_body("File deleted successfully");
+            // set_response_body("File deleted successfully");
             set_header("Content-Type", content_type);
             set_header("Content-Length", std::to_string(_response_body.length()));
             set_header("Connection", "keep-alive");
@@ -219,7 +218,7 @@ void    Respond::ft_handle_delete_response()
         {
             _status_code = "500";
             _status_message = get_response_status(_status_code);
-            set_response_body("Error deleting file");
+            // set_response_body("Error deleting file");
             set_header("Content-Type", content_type);
             set_header("Content-Length", std::to_string(_response_body.length()));
             set_header("Connection", "keep-alive");
@@ -229,7 +228,7 @@ void    Respond::ft_handle_delete_response()
     {
         _status_code = "404";
         _status_message = "Not Found";
-        set_response_body("File not found");
+        // set_response_body("File not found");
         set_header("Content-Type", content_type);
         set_header("Content-Length", std::to_string(_response_body.length()));
         set_header("Connection", "keep-alive");
