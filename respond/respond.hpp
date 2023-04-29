@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 20:49:15 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 15:55:54 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/29 18:00:51 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ class Respond
         std::string get_content_type();
         // ERROR RESPONSE
         void        handle_error_response(int error_code);
+        void        ft_handle_error(int error_code)
 
         // DELETE RESPONSE
 

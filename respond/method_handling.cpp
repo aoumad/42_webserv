@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 15:44:13 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/29 17:21:36 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void    Respond::handle_get_response()
     ft_handle_autoindex();
     
     // ft_handle_error(404);
-    
+
 }
 
 void    Respond::handle_post_response()

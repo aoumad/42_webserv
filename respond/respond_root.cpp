@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 14:53:31 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 15:41:09 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/29 17:38:55 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void    Respond::response_root()
 {
     // step 1 :check the location
     ft_parse_location();
+
     // step 2 : check the redirectation
     ft_parse_url_forwarding();
 
@@ -141,7 +142,7 @@ void    Respond::ft_check_allowed_methods()
             if (_path_found == server[i]._location[j].location_name)
             {
                 // get the autoindex
-                _autoindex = server[i]._location[j].autoindex;
+                // _autoindex = server[i]._location[j].autoindex;
                 // check for allowed methods
                 std::vector<std::string> allowed_methods = server[i]._location[j].allowed_methods;
                 for (int k = 0; k < allowed_methods.size(); k++)

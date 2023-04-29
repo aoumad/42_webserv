@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   respond_utils.cpp                                  :+:      :+:    :+:   */
+/*   method_utils.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/26 17:05:16 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/29 18:00:16 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,7 @@
 
 void    Respond::ft_handle_redirection()
 {
-    std::string response;
-    std::string body;
-
-    body = "<html><head><title>301 Moved Permanently</title></head><body><h1>Moved Permanently</h1><p>The document has moved <a href=\"" + this->_uri + "\">here</a>.</p></body></html>";
-    response = r.get_version() + " 301 Moved Permanently\r\n";
-    response += "Content-Type: text/html\r\n";
-    response += "Content-Length: " + std::to_string(body.length()) + "\r\n";
-    response += "Connection: keep-alive\r\n";
-    response += "Location: " + r.get_uri() + "\r\n";
-    response += "\r\n";
-    response += body;
-    return (response);
+    
 }
 
 void    Respond::ft_handle_cgi()
@@ -65,6 +54,11 @@ void    Respond::ft_handle_file()
             _status_code = "404";
             _status_message = "Not Found";
         }
+    }
+    else
+    {
+        _status_code = "404";
+        _status_message = "Not Found";
     }
 }
 /*
@@ -115,22 +109,25 @@ void    Respond::ft_handle_index_2()
 
 void    Respond::ft_handle_autoindex()
 {
-        for (int j = 0; j < server[i]._location.size(); j++)
+    for (int i = 0; i < server.size(); i++)
     {
-        if (_path_found == server[i]._location[j].location_name)
+        for (int j = 0; j < server[i]._location.size(); j++)
         {
-            if (!server[i]._location[j].get_autoindex())
+            if (_path_found == server[i]._location[j].location_name)
             {
-                if (!server[i].get_autoindex())
+                if (!server[i]._location[j].get_autoindex())
                 {
-                    // show forbidden result
-                    ft_handle_error(403);
+                    if (!server[i].get_autoindex())
+                    {
+                        // show forbidden result
+                        ft_handle_error(403);
+                    }
+                    else
+                        ft_show_autoindex();
                 }
                 else
                     ft_show_autoindex();
             }
-            else
-                ft_show_autoindex();
         }
     }
 }
@@ -160,7 +157,7 @@ void    Respond::ft_show_autoindex()
     
     if (dir == NULL)
     {
-        ft_handle_error(403);
+        handle_error_response(403);
         return ;
     }
     
@@ -178,7 +175,7 @@ void    Respond::ft_show_autoindex()
             
             if (stat(file_path.c_str(), &file_stat) < 0)
             {
-                ft_handle_error(403);
+                handle_error_response(403);
                 continue ;
             }
             
