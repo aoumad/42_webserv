@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 14:53:31 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 17:38:55 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/30 15:29:13 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,39 @@
 void    Respond::response_root()
 {
     // step 1 :check the location
-    ft_parse_location();
+    if (ft_parse_location())
+    {
+        handle_error_response(_status_code);
+        return ;
+    }
 
     // step 2 : check the redirectation
-    ft_parse_url_forwarding();
+    if (ft_parse_url_forwarding())
+    {
+        handle_error_response(_status_code);
+        return ;
+    } 
 
     // step 3 : check the validation of rooted path
-    ft_parse_root_path();
+    if (ft_parse_root_path())
+    {
+        handle_error_response(_status_code);
+        return ;
+    }
     
     // step 4 : check the allowed methods
-    ft_check_allowed_methods();
+    if (ft_check_allowed_methods())
+    {
+        handle_error_response(_status_code);
+        return ;
+    }
 
     // step 5 : check the autoindex
     ft_check_autoindex();
+
+    // handle redirection in case it's true
+    if (_is_redirection == true)
+        ft_handle_redirection();
 
     // methods area
     if (r.get_method() == "Get")
@@ -40,10 +60,10 @@ void    Respond::response_root()
         handle_error_response(405);
     
     // set the response
-    set_response_body();
+    print_response();
 }
 
-void  Respond::ft_parse_location()
+int Respond::ft_parse_location()
 {
     // exact location body code
     std::string path = r.get_uri();
@@ -54,6 +74,7 @@ void  Respond::ft_parse_location()
             if (server[i]._location[j].location_name == path)
             {
                 _path_found = server[i]._location[j].location_name;
+                return (0);
             }
         }
     }
@@ -66,6 +87,7 @@ void  Respond::ft_parse_location()
             if (path.find(server[i]._location[j].location_name) == 0)
             {
                 _path_found = server[i]._location[j].location_name;
+                return (0);
             }
         }
     }
@@ -83,6 +105,7 @@ void  Respond::ft_parse_location()
                 {
                     _path_found = server[i]._location[j].location_name;
                     _is_cgi = true;
+                    return (0);
                 }
             }
         }
@@ -96,12 +119,16 @@ void  Respond::ft_parse_location()
             if (server[i]._location[j].location_name == "/")
             {
                 _path_found = server[i]._location[j].location_name;
+                return (0);
             }
         }
     }
+    
+    set_status_code(404);
+    return (1);
 }
 
-void    Respond::ft_parse_url_forwarding()
+int Respond::ft_parse_url_forwarding()
 {
     for (int i = 0; i < server.size(); i++)
     {
@@ -120,20 +147,20 @@ void    Respond::ft_parse_url_forwarding()
                     set_status_message(message);
                     set_header("Location", server[i]._location[j].redirection.first);
                     _is_redirection = true;
-                    return ;
+                    return (0);
                 }
             }
             else
             {
                 set_status_code(200);
                 set_status_message("OK");
-                return ;
+                return (1);
             }
         }
     }
 }
 
-void    Respond::ft_check_allowed_methods()
+int Respond::ft_check_allowed_methods()
 {
     for (int i = 0; i < server.size(); i++)
     {
@@ -150,15 +177,15 @@ void    Respond::ft_check_allowed_methods()
                     if (allowed_methods[k] == r.get_method())
                     {
                         _is_allowed_method = true;
-                        return ;
+                        return (0);
                     }
                 }
-                set_status_code(405);
-                set_status_message("Method Not Allowed");
-                return ;
             }
         }
     }
+
+    set_status_code(405);
+    return (1);
 }
 
 void    Respond::ft_check_autoindex()

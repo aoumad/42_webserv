@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 17:21:36 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/30 18:04:13 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 void    Respond::handle_get_response()
 {
-    // step 1: checking if it's a redirection
-    if (_is_redirection == true)
-        ft_handle_redirection();
     
     // step 2: check if it's a CGI or not (like if `index` of the configuration file has .py or .php...etc)
     if (_is_cgi == true)
@@ -41,8 +38,15 @@ void    Respond::handle_post_response()
 {
     if (check_post_type() == "application/x-www-form-urlencoded" && _is_cgi == true)
     {
-        // need to call cgi and execute it
-        cout_response();
+        if (ft_check_cgi())
+            ft_handle_cgi();
+        else
+        {
+            if (stat())
+            // need to create a file that has `Key` as it's name and the content of it as `value`
+            std::istream    file;
+            
+        }
     }
     if (check_post_type() == "multipart/form-data")
     {
@@ -143,6 +147,7 @@ Response::FormData Response::read_form_data(size_t pos)
             FormData.data += line + "\n";
         }
     }
+    
     return (FormData);
 }
 
@@ -159,7 +164,7 @@ johndoe
 Content-Disposition: form-data; name="profile_pic"; filename="profile.jpg"
 Content-Type: image/jpeg
 
-(Here goes the binary data of the image file)
+_root path + path_found + upload_store
 ----------------------------1234567890
 Content-Disposition: form-data; name="notes"; filename="notes.txt"
 Content-Type: text/plain

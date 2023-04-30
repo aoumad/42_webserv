@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 20:49:15 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 18:00:51 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/30 15:16:43 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ class Respond
         Respond();
         ~Respond();
 
-        std::string get_respond();
-        std::string get_respond(std::string request, std::string body);
-
         void set_http_version(std::string http_version);
         void set_status_code(int status_code);
         void set_status_message(std::string status_message);
@@ -72,11 +69,11 @@ class Respond
         void    Respond::response_root()
         std::string response_autoindex(request &r);
         std::string response_cgi(request &r);
-        void        ft_parse_location();
-        void        ft_parse_url_forwarding();
-        void        ft_check_allowed_methods();
+        int         ft_parse_location();
+        int         ft_parse_url_forwarding();
+        int         ft_check_allowed_methods();
         void        ft_check_autoindex();
-        void        ft_parse_root_path();
+        int         ft_parse_root_path();
 
         // GET RESPONSE
         void        ft_handle_redirection();
@@ -112,13 +109,12 @@ class Respond
         std::map<std::string, std::string> _headers;
         std::string _response_body;
         std::string _http_version;
-        std::string _status_code;
+        int         _status_code;
         std::string _status_message;
         std::string _document_root;
-        size_t      _location;
         std::string _path_found;
         std::string _rooted_path;
-        std::string _is_autoindex;
+        bool        _is_autoindex;
         std::string _boundary;
         std::string _upload_store;
         std::vector<FormData> _form_data;
@@ -131,6 +127,7 @@ class Respond
         void        handle_get_response();
         void        handle_post_response();
         void        handle_delete_response();
+        void        print_response();
 
         request& r;
         server& server;

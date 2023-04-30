@@ -17,12 +17,11 @@ Respond::Respond()
     _status_code = "200";
     _status_message = "OK";
     // _document_root = "./www";
-    _location = 0;
     _path_found = "";
     _is_cgi = false;
     _is_allowed_method = false;
     _rooted_path = "";
-    _is_autoindex = "";
+    _is_autoindex = false;
     _is_redirection = false;
     _is_index = false;
     _boundary = r.get_header("Content-Type").substr(r.get_header("Content-Type").find("boundary=") + 9);
@@ -88,29 +87,6 @@ std::string Respond::get_response_body()
     return (_response_body);
 }
 
-std::string Respond::get_respond()
-{
-    std::string respond;
-    std::string status_line;
-    std::string header_line;
-    std::string response_body;
-
-    status_line = get_status_line(_status_code);
-    respond += status_line;
-    respond += "\r\n";
-
-    for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
-    {
-        header_line = get_header_line(it->first);
-        respond += header_line;
-        respond += "\r\n";
-    }
-
-    response_body = get_response_body();
-    respond += response_body;
-    return (respond);
-}
-
 int         Respond::is_path_safe(std::string requested_path)
 {
     /*
@@ -126,14 +102,14 @@ std::string Respond::get_document_root()
     return (_document_root);
 }
 
-void    Respond::ft_parse_root_path()
+int Respond::ft_parse_root_path()
 {
     struct stat file_stats;
     _rooted_path = server.get_root() + _path_found;
 
     if (!stat(_rooted_path.c_str(), &file_stats))
-        return;
+        return (0);
+
     set_status_code(403);
-    set_status_message("Forbidden");
-    return ; // i need to call error function instead
+    return (1);
 }

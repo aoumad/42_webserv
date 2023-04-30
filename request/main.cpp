@@ -22,7 +22,7 @@ s = "POST /api/v1/login HTTP/1.1\r\n"
     request r(s);
     Respond resp;
 
-    resp.set_status_code("200");
+    resp.set_status_code(200);
     resp.set_status_message("OK");
     resp.response_root();
     // resp->set_header("Content-Length", std::to_string(resp->_response_body.length()));

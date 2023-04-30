@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/29 18:00:16 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/04/30 18:06:19 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ void    Respond::ft_handle_file()
     std::ifstream file;
     if (_rooted_path != "")
     {
-        file.open(_rooted_path);
+        file.open(_rooted_path.c_str());
         if (file.is_open())
         {
             _response_body = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-            _status_code = "200";
+            _status_code = 200;
             _status_message = "OK";
             _headers["Content-Type"] = "text/html";
             _headers["Content-Length"] = std::to_string(_response_body.length());
@@ -189,4 +189,26 @@ void    Respond::ft_show_autoindex()
     closedir(dir);
     index_html += "</tbody>\n</table>\n</body>\n</html>\n";
     _response_body = index_html;
+}
+
+void    Respond::handle_error_response(int error_code)
+{
+    _response_body = "<html><head><title>" + std::to_string(error_code) + " " + _status_message + "</title></head><body><h1>" + std::to_string(error_code) + " " + _status_message + "</h1><p>You don't have permission to access " + this->_uri + " on this server.</p></body></html>";
+    set_status_code(_status_code);
+    set_status_message(get_response_status(_status_code));
+    set_header("Content-Type", "text/html");
+    set_header("Content-Length", std::to_string(_response_body.length()));
+    set_header("Connection", "keep-alive");
+
+    print_response();
+}
+
+void    Respond::print_response()
+{
+    std::cout << "HTTP/1.1 " << get_status_code() << " " << get_status_message() << "\r\n";
+    for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
+        std::cout << it->first << ": " << it->second << "\r\n";
+    std::cout << "\r\n";
+    if (get_response_body() != "")
+        std::cout << _response_body;
 }
