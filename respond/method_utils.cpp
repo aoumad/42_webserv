@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-/*   Updated: 2023/04/30 18:06:19 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/01 16:47:55 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void    Respond::ft_handle_cgi()
     
 }
 
-int    ft_check_file()
+int    ft_check_file(std::vector<server> server)
 {
     struct stat st;
     if (stat(server.get_root().c_str(), &st) == 0)
@@ -69,7 +69,7 @@ Here's how it works:
 In other words, the std::string constructor reads the entire contents of the file into a std::string object. The resulting std::string object contains all the characters from the file, including any whitespace characters and newline characters.
 */
 
-void    Respond::ft_handle_index()
+void    Respond::ft_handle_index(std::vector<server> servers)
 {
     std::string index;
     
@@ -107,7 +107,7 @@ void    Respond::ft_handle_index_2()
 {
 }
 
-void    Respond::ft_handle_autoindex()
+void    Respond::ft_handle_autoindex(std::vector<server> server)
 {
     for (int i = 0; i < server.size(); i++)
     {
