@@ -10,13 +10,12 @@ Content-Length: 1234\r\n
 #include "respond.hpp"
 #include "../request/request.hpp"
 
-Respond::Respond()
+Respond::Respond(request& req) : r(req)
 {
     _http_version = "HTTP/1.1";
     _response_body = "";
     _status_code = 200;
     _status_message = "OK";
-    // _document_root = "./www";
     _path_found = "";
     _is_cgi = false;
     _is_allowed_method = false;
@@ -26,6 +25,7 @@ Respond::Respond()
     _is_index = false;
     _boundary = r.get_header("Content-Type").substr(r.get_header("Content-Type").find("boundary=") + 9);
     _upload_store = "";
+    _server_index = 0;
 }
 
 Respond::~Respond()
@@ -57,7 +57,7 @@ std::string Respond::get_http_version()
     return (_http_version);
 }
 
-std::string Respond::get_status_code()
+int Respond::get_status_code()
 {
     return (_status_code);
 }
@@ -66,13 +66,6 @@ std::string Respond::get_status_message()
 {
     return (_status_message);
 }
-
-
-std::string Respond::get_response_body()
-{
-    return (_response_body);
-}
-
 
 std::string Respond::get_header_line(std::string key)
 {
@@ -105,7 +98,7 @@ std::string Respond::get_document_root()
 int Respond::ft_parse_root_path(std::vector<server> server)
 {
     struct stat file_stats;
-    _rooted_path = server.get_root() + _path_found;
+    _rooted_path = server[_server_index].get_root() + _path_found;
 
     if (!stat(_rooted_path.c_str(), &file_stats))
         return (0);

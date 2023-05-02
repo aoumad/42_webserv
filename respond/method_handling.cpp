@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/01 16:47:01 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/02 14:37:53 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void    Respond::handle_get_response(std::vector<server> servers)
 {
     
     // step 2: check if it's a CGI or not (like if `index` of the configuration file has .py or .php...etc)
-    if (_is_cgi == true)
-        ft_handle_cgi();
+    // if (_is_cgi == true)
+    //     ft_handle_cgi();
     
     // step 3: check if it's a file or not
-    if (ft_check_file(servers) == true)
+    if (ft_check_file() == true)
         ft_handle_file();
 
     // step 4 : check the index in the configuration file and render it
@@ -34,11 +34,12 @@ void    Respond::handle_get_response(std::vector<server> servers)
 
 }
 
-void    Respond::handle_post_response()
+void    Respond::handle_post_response(std::vector<server> server)
 {
     struct stat st;
-    if (_is_cgi == false && (get_upload_store() == false || server.get_upload() == "off"))
-        return ;
+    (void)server;
+    // if (_is_cgi == false && (get_upload_store(server) == false || server[_server_index].get_upload() == "off"))
+    //     return ;
     _upload_store_path = _rooted_path;
     _upload_store.append(_upload_store);
     if (stat(_upload_store_path.c_str(), &st) != 0)
@@ -49,15 +50,15 @@ void    Respond::handle_post_response()
 
     if (check_post_type() == "application/x-www-form-urlencoded" && _is_cgi == true)
     {
-        if (ft_check_cgi())
-            ft_handle_cgi();
-        else
-        {
+        // if (ft_check_cgi())
+        //     ft_handle_cgi();
+        // else
+        // {
             
             // need to create a file that has `Key` as it's name and the content of it as `value`
             handle_urlencoded();
             create_decode_files();
-        }
+        // }
     }
     if (check_post_type() == "multipart/form-data")
     {
@@ -174,7 +175,7 @@ FormData Respond::read_form_data(size_t pos)
             size_t pos = line.find("name=\"") + sizeof("name=\"") - 1; // similar to line.find() + 6
             size_t end = line.find("\"", pos);
             if (end != std::string::npos)
-                form_data.name = line.substr("pos, end - pos");
+                form_data.name = line.substr(pos, end - pos);
 
             pos = line.find("filename=\"") + sizeof("filename=\"") - 1;
             end = line.find("\"", pos);
@@ -191,11 +192,11 @@ FormData Respond::read_form_data(size_t pos)
         else
         {
             // It's the form data value
-            FormData.data += line + "\n";
+            form_data.data += line + "\n";
         }
     }
     
-    return (FormData);
+    return (form_data);
 }
 
 /*
@@ -220,26 +221,6 @@ Content-Type: text/plain
 ----------------------------1234567890--
 */
 
-int Respond::get_upload_store()
-{
-    for (int i = 0; i < server.size(); i++)
-    {
-        for (int j = 0; j < server[i]._location.size(); j++)
-        {
-            if (server[i]._location[j].location_name == _path_found)
-            {
-                if (server[i]._location[j].upload_store.empty())
-                    return (0);
-                else
-                {
-                    _upload_store = server[i]._location[j].upload_store;
-                    return (1);
-                }
-            }
-        }
-    }
-}
-
 std::string Respond::check_post_type()
 {
     if(r.get_header("Content-Type").find("multipart") != std::string::npos)
@@ -250,14 +231,14 @@ std::string Respond::check_post_type()
         return ("regular");
 }
 
-void    Respond::ft_handle_delete_response()
+void    Respond::handle_delete_response()
 {
     if (std::remove(_rooted_path.c_str()) == 0)
     {
         _status_code = 200;
         _status_message = get_response_status(_status_code);
         // set_response_body("File deleted successfully");
-        set_header("Content-Type", get_content_type());
+        set_header("Content-Type", r.get_header("Content-Type"));
         set_header("Content-Length", std::to_string(_response_body.length()));
         set_header("Connection", "keep-alive");
     }
@@ -266,7 +247,7 @@ void    Respond::ft_handle_delete_response()
         _status_code = 500;
         _status_message = get_response_status(_status_code);
         // set_response_body("Error deleting file");
-        set_header("Content-Type", get_content_type());
+        set_header("Content-Type", r.get_header("Content-Type"));
         set_header("Content-Length", std::to_string(_response_body.length()));
         set_header("Connection", "keep-alive");
     }
