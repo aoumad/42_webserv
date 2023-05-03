@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 14:53:31 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/02 16:46:22 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/03 12:06:59 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,29 @@ void    Respond::response_root(std::vector<server> servers)
     // step 1 :check the location
     if (ft_parse_location(servers))
     {
-        handle_error_response(_status_code);
-        return ;
+        // considering the location of the root directory is indeed the final step in handling requests when no specific location matches the requested URI.
+        // if (root_location(servers) == 0)
+        root_location(servers);
+            // direct it to the GET response and see if i can read the file concatenated with the root using `stat`
     }
 
     // step 2 : check the redirectation
     if (!ft_parse_url_forwarding(servers))
-        return ; 
-
-    // step 3 : check the validation of rooted path
-    if (ft_parse_root_path(servers))
-    {
-        handle_error_response(_status_code);
         return ;
-    }
+    // step 3 : check the validation of rooted path
+    // if (ft_parse_root_path(servers))
+    // {
+    //     handle_error_response(_status_code);
+    //     return ;
+    // }
 
     // step 4 : check the allowed methods
-    if (ft_check_allowed_methods(servers))
-    {
-        handle_error_response(_status_code);
-        return ;
-    }
+    // if (ft_check_allowed_methods(servers))
+    // {
+    //     printf("______________________HEEEREEE____________________________----\n");
+    //     handle_error_response(_status_code);
+    //     return ;
+    // }
 
     // step 5 : check the autoindex
     ft_check_autoindex(servers);
@@ -98,7 +100,6 @@ int Respond::prefix_location(std::vector<server> server, std::string path)
     if (pos != std::string::npos)
     {
         path = path.substr(0, pos);
-        printf("________________________________________________________-\n");
         return (prefix_location(server, path));
     }
     return (1);
@@ -136,8 +137,11 @@ int Respond::root_location(std::vector<server> server)
 {
     for (size_t i = 0; i < server.size(); i++)
     {
+        printf("__________________________________________________----\n");
         for (size_t j = 0; j < server[i]._location.size(); j++)
         {
+            printf("__________________________________________________----\n");
+            std::cout << server[i]._location[j].location_name << std::endl;
             if (server[i]._location[j].location_name == "/")
             {
                 _server_index = i;
@@ -164,10 +168,6 @@ int Respond::ft_parse_location(std::vector<server> server)
     if (prefix_location(server, path) == 0)
         return (0);
 
-    // root location
-    if (root_location(server) == 0)
-        return (0);
-    set_status_code(404);
     return (1);
 }
 
@@ -226,9 +226,8 @@ int Respond::ft_check_allowed_methods(std::vector<server> server)
             }
         }
     }
-    return (1);
-
-    set_status_code(405);
+    set_status_code(404);
+    set_status_message(get_response_status(get_status_code()));
     return (1);
 }
 

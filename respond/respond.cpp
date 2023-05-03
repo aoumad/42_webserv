@@ -98,6 +98,9 @@ std::string Respond::get_document_root()
 int Respond::ft_parse_root_path(std::vector<server> server)
 {
     struct stat file_stats;
+        // printf("__________________________________________________----\n");
+        // std::cout << _server_index << std::endl;
+        // printf("__________________________________________________----\n");
     _rooted_path = server[_server_index].get_root() + _path_found;
 
     if (!stat(_rooted_path.c_str(), &file_stats))
