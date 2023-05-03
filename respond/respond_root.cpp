@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 14:53:31 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/03 12:06:59 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/03 15:42:34 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void    Respond::response_root(std::vector<server> servers)
     // step 1 :check the location
     if (ft_parse_location(servers))
     {
+        printf("______________________HEEEREEE____________________________----\n");
         // considering the location of the root directory is indeed the final step in handling requests when no specific location matches the requested URI.
         // if (root_location(servers) == 0)
         root_location(servers);
@@ -27,19 +28,18 @@ void    Respond::response_root(std::vector<server> servers)
     if (!ft_parse_url_forwarding(servers))
         return ;
     // step 3 : check the validation of rooted path
-    // if (ft_parse_root_path(servers))
-    // {
-    //     handle_error_response(_status_code);
-    //     return ;
-    // }
+    if (ft_parse_root_path(servers))
+    {
+        handle_error_response(_status_code);
+        return ;
+    }
 
     // step 4 : check the allowed methods
-    // if (ft_check_allowed_methods(servers))
-    // {
-    //     printf("______________________HEEEREEE____________________________----\n");
-    //     handle_error_response(_status_code);
-    //     return ;
-    // }
+    if (ft_check_allowed_methods(servers))
+    {
+        handle_error_response(_status_code);
+        return ;
+    }
 
     // step 5 : check the autoindex
     ft_check_autoindex(servers);
@@ -137,11 +137,8 @@ int Respond::root_location(std::vector<server> server)
 {
     for (size_t i = 0; i < server.size(); i++)
     {
-        printf("__________________________________________________----\n");
         for (size_t j = 0; j < server[i]._location.size(); j++)
         {
-            printf("__________________________________________________----\n");
-            std::cout << server[i]._location[j].location_name << std::endl;
             if (server[i]._location[j].location_name == "/")
             {
                 _server_index = i;

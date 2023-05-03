@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/02 14:37:53 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/03 14:08:13 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void    Respond::handle_get_response(std::vector<server> servers)
 {
     
     // step 2: check if it's a CGI or not (like if `index` of the configuration file has .py or .php...etc)
-    // if (_is_cgi == true)
-    //     ft_handle_cgi();
     
     // step 3: check if it's a file or not
     if (ft_check_file() == true)

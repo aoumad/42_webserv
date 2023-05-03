@@ -13,8 +13,8 @@ int main(int ac, char **av)
     (void)av;
     std::vector<server> servers;
     std::vector<int> all_ports;
-//     servers = ft_fill_servers(av);
-//     all_ports = get_all_ports(servers);
+    servers = ft_fill_servers(av);
+    all_ports = get_all_ports(servers);
 //    for (size_t i = 0; i < servers.size(); i++)
 //    {
 //         servers[i].display_sever();
