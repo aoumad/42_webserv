@@ -47,6 +47,8 @@ class Respond
         void set_header(std::string key, std::string value);
         void set_response_body();
         std::string get_status_line(const std::string &status_code);
+        void    set_date();
+        void    set_last_modified();
 
         std::string get_http_version();
         int         get_status_code();
@@ -107,6 +109,8 @@ class Respond
         std::string _boundary;
         std::string _upload_store;
         int         _server_index;
+        int         _location_index;
+        std::string _removed_path;
 
         bool        _is_cgi;
         bool        _is_allowed_method;

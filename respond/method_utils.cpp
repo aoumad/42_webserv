@@ -80,14 +80,14 @@ void    Respond::ft_handle_index(std::vector<server> server)
                     else
                     {
                         index = server[i].get_index();
-                        _rooted_path = server[i].get_root() + _path_found + index;
+                        _rooted_path = server[i].get_root() + _removed_path + index;
                         ft_handle_index_2();
                     }
                 }
                 else
                 {
                     index = server[i]._location[j].get_index();
-                    _rooted_path = server[i].get_root() + _path_found + index;
+                    _rooted_path = server[i].get_root() + _removed_path + index;
                     ft_handle_index_2();
                 }
             }

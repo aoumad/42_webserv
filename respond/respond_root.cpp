@@ -100,6 +100,7 @@ int Respond::prefix_location(std::vector<server> server, std::string path)
     if (pos != std::string::npos)
     {
         path = path.substr(0, pos);
+        _removed_path = path.substr(pos) + _removed_path;
         return (prefix_location(server, path));
     }
     return (1);

@@ -26,6 +26,8 @@ Respond::Respond(request& req) : r(req)
     _boundary = r.get_header("Content-Type").substr(r.get_header("Content-Type").find("boundary=") + 9);
     _upload_store = "";
     _server_index = 0;
+    _location_index = 0;
+    _removed_path = "";
 }
 
 Respond::~Respond()
@@ -50,6 +52,28 @@ void    Respond::set_status_message(std::string status_message)
 void    Respond::set_header(std::string key, std::string value)
 {
     _headers[key] = value;
+}
+
+void    Respond::set_date()
+{
+    std::time_t rawtime;
+    struct tm * timeinfo;
+    char buffer[80];
+
+    time (&rawtime);
+    timeinfo = localtime(&rawtime);
+    std::strftime(buffer, 80, "%a, %d %b %Y %X %Z", timeinfo);
+    _headers["Date"] = buffer;
+}
+
+void    Respond::set_last_modified()
+{
+    struct stat file_stats;
+    char buffer[80];
+
+    stat(_rooted_path.c_str(), &file_stats);
+    std::strftime(buffer, 80, "%a, %d %b %Y %X %Z", localtime(&file_stats.st_mtime));
+    _headers["Last-Modified"] = buffer;
 }
 
 std::string Respond::get_http_version()
@@ -101,7 +125,7 @@ int Respond::ft_parse_root_path(std::vector<server> server)
         printf("__________________________________________________----\n");
         std::cout << _server_index << std::endl;
         printf("__________________________________________________----\n");
-    _rooted_path = server[_server_index].get_root() + _path_found;
+    _rooted_path = server[_server_index].get_root() + _removed_path;
 
     if (!stat(_rooted_path.c_str(), &file_stats))
         return (0);
