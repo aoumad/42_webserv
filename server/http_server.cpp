@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 18:41:23 by yismaili          #+#    #+#             */
-/*   Updated: 2023/04/30 23:14:40 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/05 23:32:17 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ namespace http{
        // Insert html page or ...
         std::ostringstream response; //create the output string stream
         
-        response << "HTTP/1.1 200 OK\r\n";
+        response << "HTTP/1.1 200 OK\r\n";>
         response << "Content-Type: text/html; charset=UTF-8\r\n";
         response << "\r\n";
         response << "<html><body><h1>Hello younes </h1>";

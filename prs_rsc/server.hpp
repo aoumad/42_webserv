@@ -18,7 +18,7 @@ protected:
     int _client_max_body_size; /*l*/
     std::map<int, std::string> _error_page;
     std::vector<std::string> _allow_methods;
-    std::pair <int , std::string> _rediriction;
+    std::pair <int , std::string> _redirection;
     std::string _upload_store;
     bool _autoindex;
     bool _upload;
@@ -30,11 +30,13 @@ protected:
     // std::string _ssl_certificate_key;
     // std::string _ssl_protocols;
     // std::string _ssl_ciphers;
-public:
     std::map<std::string ,std::string> _path_info; 
+public:
     std::vector<int> _listen; /*s*/
     std::vector<location> _location;
     server(Data_config data, bool check_location);
+    server& operator=(const server& o);
+    server(const server& o);
     server();
     ~server();
     void display_sever();
@@ -49,6 +51,8 @@ public:
     bool get_autoindex () const;
     std::pair <int , std::string> get_redirection() const;
     std::string get_upload_store() const;
+    std::map<std::string ,std::string> get_path_info() const;
+
 };
 
 int is_world(std::string str, std::string tmp);

@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 20:49:15 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/02 16:43:58 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/06 17:48:32 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ class Respond
         void set_status_code(int status_code);
         void set_status_message(std::string status_message);
         void set_header(std::string key, std::string value);
-        void set_response_body();
+
+        void set_response_body(std::string body);
         std::string get_status_line(const std::string &status_code);
         void    set_date();
         void    set_last_modified();
@@ -54,11 +55,14 @@ class Respond
         int         get_status_code();
         std::string get_status_message();
         std::string get_response_body();
+        std::string get_response_status(int status_code);
         std::string get_header_line(std::string key);
         std::string get_mime_type(std::string file_extension);
-        std::string get_response_status(int status_code);
         int         is_path_safe(std::string requested_path);
         std::string get_document_root();
+        std::string get_file_cgi();
+        std::string get_path_info_founded();
+        
         
         void print_respond();
 
@@ -67,7 +71,7 @@ class Respond
         std::string response_cgi(request &r);
         int         ft_parse_location(std::vector<server> server);
         int         exact_location(std::vector<server> server, std::string path);
-        int         prefix_location(std::vector<server> server, std::string path);
+        int         prefix_location(std::vector<server> server, std::string &path);
         int         dynamic_location(std::vector<server> server, std::string path);
         int         root_location(std::vector<server> server);
         int         ft_parse_url_forwarding(std::vector<server> server);
@@ -111,6 +115,9 @@ class Respond
         int         _server_index;
         int         _location_index;
         std::string _removed_path;
+        std::string _cookie;
+        std::string _path_info_founded;
+        std::string _file_cgi;
 
         bool        _is_cgi;
         bool        _is_allowed_method;

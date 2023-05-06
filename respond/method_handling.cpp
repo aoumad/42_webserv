@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:52:50 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/03 14:08:13 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/07 00:31:03 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,29 +36,34 @@ void    Respond::handle_post_response(std::vector<server> server)
 {
     struct stat st;
     (void)server;
-    // if (_is_cgi == false && (get_upload_store(server) == false || server[_server_index].get_upload() == "off"))
+    // if (_is_cgi == false && (server[_server_index].get_upload_store().empty() || server[_server_index].get_upload() == "off"))
+    // if (_is_cgi == false && (server[_server_index].get_upload_store().empty()))
     //     return ;
     _upload_store_path = _rooted_path;
+    // std::cout << "___________________papapa-----_______---________----_____--___--__-_-_-_--_--" << std::endl;
+    // std::cout << _upload_store_path << std::endl;
+    // std::cout << "___________________papapa-----_______---________----_____--___--__-_-_-_--_--" << std::endl;
     _upload_store.append(_upload_store);
     if (stat(_upload_store_path.c_str(), &st) != 0)
     {
         mkdir(_upload_store_path.c_str(), 0777);
         // or return error
     }
-
-    if (check_post_type() == "application/x-www-form-urlencoded" && _is_cgi == true)
+    if (check_post_type() == "x-www-form-urlencoded" && _is_cgi == true)
     {
-        // if (ft_check_cgi())
-        //     ft_handle_cgi();
-        // else
-        // {
+        if (_is_cgi == true)
+        {
+            run_cgi(r, *this);
+        }
+        else
+        {
             
             // need to create a file that has `Key` as it's name and the content of it as `value`
             handle_urlencoded();
             create_decode_files();
-        // }
+        }
     }
-    if (check_post_type() == "multipart/form-data")
+    if (check_post_type() == "form-data")
     {
         handle_form_data();
     }
@@ -221,7 +226,7 @@ Content-Type: text/plain
 
 std::string Respond::check_post_type()
 {
-    if(r.get_header("Content-Type").find("multipart") != std::string::npos)
+    if(r.get_header("Content-Type").find("multipart/form-data") != std::string::npos)
         return ("form-data");
     else if(r.get_header("Content-Type").find("application/x-www-form-urlencoded") != std::string::npos)
         return ("x-www-form-urlencoded");

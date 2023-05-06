@@ -6,16 +6,11 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 02:14:39 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/03 15:40:39 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/07 00:35:46 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "respond.hpp"
-
-// void    Respond::ft_handle_cgi()
-// {
-    
-// }
 
 int    Respond::ft_check_file()
 {
@@ -213,6 +208,8 @@ void    Respond::handle_error_response(int error_code)
     set_status_message(get_response_status(_status_code));
     set_header("Content-Type", "text/html");
     set_header("Connection", "keep-alive");
+    set_date();
+    set_last_modified();
     _response_body = "<html><head><title>" + std::to_string(error_code) + " " + _status_message + "</title></head><body><h1>" + std::to_string(error_code) + " " + _status_message + "</h1><p>You don't have permission to access " + r.get_uri() + " on this server.</p></body></html>";
     set_header("Content-Length", std::to_string(_response_body.length()));
 
@@ -225,6 +222,6 @@ void    Respond::print_response()
     for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
         std::cout << it->first << ": " << it->second << "\r\n";
     std::cout << "\r\n";
-    if (get_response_body() != "")
-        std::cout << _response_body;
+   // if (get_response_body() != "")
+        std::cout << "response body: " << _response_body << std::endl;;
 }

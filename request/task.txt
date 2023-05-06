@@ -14,4 +14,4 @@ Cache-Control
 Connection
 Content-Disposition
 Allow
-Server ==> webserv 1.0
+Server ==> webserv 1.1

@@ -28,6 +28,8 @@ Respond::Respond(request& req) : r(req)
     _server_index = 0;
     _location_index = 0;
     _removed_path = "";
+    _path_info_founded = "";
+    _file_cgi = "";
 }
 
 Respond::~Respond()
@@ -121,15 +123,27 @@ std::string Respond::get_document_root()
 
 int Respond::ft_parse_root_path(std::vector<server> server)
 {
-    struct stat file_stats;
-        printf("__________________________________________________----\n");
-        std::cout << _server_index << std::endl;
-        printf("__________________________________________________----\n");
-    _rooted_path = server[_server_index].get_root() + _removed_path;
-
-    if (!stat(_rooted_path.c_str(), &file_stats))
+    // struct stat file_stats;
+    _rooted_path = server[_server_index]._location[_location_index].get_root() + _removed_path;
+    // if (!stat(_rooted_path.c_str(), &file_stats))
+    _file_cgi = _rooted_path;
         return (0);
 
     set_status_code(403);
     return (1);
+}
+
+void    Respond::set_response_body(std::string body)
+{
+    _response_body = body;
+}
+
+std::string Respond::get_path_info_founded()
+{
+    return (_path_info_founded);
+}
+
+std::string Respond::get_file_cgi()
+{
+    return (_file_cgi);
 }
