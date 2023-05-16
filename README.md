@@ -1,46 +1,54 @@
-# webserv
+## Table of content
 
-Software that receives requests through the HTTP protocol from clients such as web browsers and responds with static web pages
-such as HTML documents.
+- [Where do we start from?](#where-do-we-start-from)
+- [An overview of HTTP](#an-overview-of-http)
+- [Features](#features)
+- [Installation](#installation)
+- [HTTP Request](#http-request)
+- [HTTP Response](#http-response)
 
-<img width="738" alt="Screen Shot 2023-03-18 at 7 17 16 PM" src="https://user-images.githubusercontent.com/69278312/226126784-e79dbad1-25bd-4cb8-876f-61fc66945116.png">
+> **Note**
+> Concerning the implementation of our own http server, it's a huge project and requires a lot of time. Thus i implemented it with two of my friends; this is why in this `sub-repo` i will only be responsible of explaining the part of project i was responsible of (which is parsing the request that comes from the client through the server and generate the response and send it back to the server so that it can be shown in the preview of the client). However we made a repo of the whole code (soon here)
 
+## Where do we start from?
 
-# What is HTTP ?
+- HTTP is everywhere! Every website we visit is ran on HTTP server. You may think that then what about HTTPS servers? Technically HTTPS is same HTTP with more security.
+- Many programmers at some point or the other may get curious about how HTTP servers work and how to build one from scratch without any external libraries.
 
-HTTP is a request-response protocol that allows users to communicate data on the World Wide Web (WWW) and transfer hypertext.
+And I'm one of that many programmers.
 
+- In this project we will build an http server using CPP 98... pretty old version of C++ but don't worry it's more than enough to implement an awesome http server ;)
 
-# How It Works ?
+## An overview of HTTP
 
-Here’s how my server works in summary:
+- HTTP is a protocol for fetching resources such as HTML documents. It is the foundation of any data exchange on the Web and it is a client-server protocol, which means requests are initialed by the recipient, usually the Web browser. A complete document is reconstructed from the different sub-documents fetched, for instance, text, layout description, images, videos, scripts and more.
+- As a `request-response` protocol, HTTP gives users a way to interact with web resources such as HTML files by transmitting hypertext messages between clients and servers.
+- HTTP utilizes `specific request methods` in order to perform various tasks. All HTTP servers use the GET and HEAD methods, but not all support the rest of these request methods... However in our project we must implement at least the three neccessary methods (GET-POST-DELETE).
+- Clients and servers communicate by exchanging individual messages (as opposed to a stream of data). The messages sent by the client, usually a Web browser, are called `requests` and the messages sent by the server as an answer are called `responses` and this is exactly what i am responsible of.
 
-  - Listening for socket connections from clients
-  - Creating a new thread for a new connection
-  - Reading client’s request
-  - Processing the request read from client
-  - Constructing a response based on the request
-  - Writing the response back to the client
-  - Closing the connection
- 
-# What is a Socket ?
+## Features
+- Support for HTTP/1.1 protocol
+- Parsing incoming requests to extract relevant information.
+- The ability to match the URL/URI with the locations of the servers in the configue file either to match it by `exact location` `dynamic location in case we have CGI` or using `prefix location`.
+- Generation of responses based on the parsed requests.
+- The server can handle multi requests in same time and generate responses as well in same time.
+- Implementation of GET, POST, DELETE.
+- It handle CGI (php and python)
+- Concerning GET method, it handles files, index, autoindex and CGI as well.
+- Concerning POST method, it handles CGI, form-data, x-www-form-urlencoded (this one handles both CGI and decode files).
+- Error handling and appropriate status code responses.
 
- .  software endpoint that establishes a communication link between two applications running on a network. whenever there is a need for inter process communication within the same machine, we use mechanism like signals or pipes(named or unnamed). Similarly, when we desire a communication between two applications possibly running on different machines, we need sockets
+## Installation
+- To use our code, go to this link where we have the whole code of HTTP/1.1 server and follow these steps:
 
-# What is TCP?
+1 - Clone this repository to your local machine.
 
-TCP, short for Transmission Control Protocol, a TCP server is a program that listens for incoming connections from TCP clients and provides services to them. An HTTP server is a type of TCP server that specifically handles HTTP requests and responses.
+2 - Ensure you have a compatible C++ compiler installed. (compile with `make && ./webserv /Users/aoumad/Desktop/(project name)/prs_rsc/server.conf` just replace the location part based on the location of the project you cloned.
 
-# HTTP requests
+3 - Run the compiled server executable.
 
-- Request line:
-     .The request line is the first line in the request message. It consists of at least three items:
-      A method. The method is a one-word command that tells the server what it should do with the resource. For example, the server could be asked      to send the resource to the client.
-     .The path component of the URL for the request. The path identifies the resource on the server
-     .The HTTP version number, showing the HTTP specification to which the client has tried to make the message comply.
-     
-                    GET /software/htp/cics/index.html HTTP/1.1
- - HTTP headers:
- 
-        
-![1680902384854](https://user-images.githubusercontent.com/69278312/230799535-1c251fed-9171-4cf9-a17e-8b69533985c3.jpg)
+4 - Go to POSTMAN or to the browser and test like 'http://localhost:8001/upload/' or any location you find in the configue file.
+
+PS: check the location of the host if you got an error such as 'Bind system...'
+
+## HTTP Request
