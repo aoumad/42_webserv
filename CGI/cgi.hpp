@@ -11,7 +11,8 @@
 #include "../respond/respond.hpp"
 
 class Respond;
+class request;
 
-std::string run_cgi(request &r,  Respond &res);
+std::string run_cgi(request &r,  Respond &res, std::vector<server> server);
 
 #endif

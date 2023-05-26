@@ -6,32 +6,25 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <fcntl.h> 
 
 class location;
 class server
 {
 protected:
-    std::vector<std::string> _server_name; /*s*/
     std::string _index;
-    std::string _host; /*s*/
+    std::string _host;
     std::string _root; 
-    int _client_max_body_size; /*l*/
+    unsigned int _client_max_body_size;
     std::map<int, std::string> _error_page;
     std::vector<std::string> _allow_methods;
     std::pair <int , std::string> _redirection;
     std::string _upload_store;
     bool _autoindex;
     bool _upload;
-    // std::vector<std::string> _access_log;
-    // std::vector<std::string> _error_log;
-    //std::vector<std::string> _meme_types;
-    // std::string _gzip;
-    // std::string _ssl_certificate;
-    // std::string _ssl_certificate_key;
-    // std::string _ssl_protocols;
-    // std::string _ssl_ciphers;
     std::map<std::string ,std::string> _path_info; 
 public:
+    std::vector<std::string> _server_name; /*s*/
     std::vector<int> _listen; /*s*/
     std::vector<location> _location;
     server(Data_config data, bool check_location);
@@ -49,17 +42,18 @@ public:
     std::map<int, std::string> get_error_page() const;
     std::vector<std::string> get_allow_methods() const;
     bool get_autoindex () const;
+    bool get_upload() const;
     std::pair <int , std::string> get_redirection() const;
     std::string get_upload_store() const;
     std::map<std::string ,std::string> get_path_info() const;
 
 };
 
-int is_world(std::string str, std::string tmp);
+int is_world(std::string word, std::string str);
 int search_char(std::string str, char c);
 std::string trimString(const std::string& str);
 int skip_spaces(std::string str);
-std::vector<server> ft_fill_servers(char **av);
+std::vector<server> ft_fill_servers(char **av, int ac);
 std::vector<int> get_all_ports(std::vector<server> servers);
 
 #endif

@@ -6,20 +6,23 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:05:21 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/05 16:33:19 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/24 00:23:21 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "request.hpp"
 
-request::request()
+request::request() : _method(""), _uri(""), _version(""),
+    _body(""), _port(80), _query("")
 {
     return ;
 }
 
-request::request(std::string request)
+request::request(std::string request, size_t content_len) : _method(""), _uri(""), _version(""),
+    _body(""), _port(80), _query(""), _content_len(content_len)
 {
-    this->parse_request(request);
+    this->_init_request = request;
+    add_header("Content-Length", std::to_string(_content_len));
     return ;
 }
 
@@ -43,6 +46,9 @@ request &request::operator=(const request &src)
         this->_version = src._version;
         this->_headers = src._headers;
         this->_body = src._body;
+        this->_port = src._port;
+        this->_query = src._query;
+        this->_content_len = src._content_len;
     }
     return (*this);
 }
@@ -105,13 +111,21 @@ std::map<std::string, std::string> request::get_headers() const
     return (this->_headers);
 }
 
-void request::parse_request(std::string request)
+size_t  request::get_content_length() const
 {
+    return (this->_content_len);
+}
+
+int request::parse_request()
+{
+    std::string request = this->_init_request;
     // Split the request into lines
     std::vector<std::string> lines;
     std::istringstream iss(request);
     std::string line;
 
+    if (request.empty())
+        return (2);
     while (std::getline(iss, line))
     {
         if (line.empty())
@@ -123,11 +137,9 @@ void request::parse_request(std::string request)
     request_line >> this->_method >> this->_uri >> this->_version;
     // i need to call a function to check if the request line content is suitable or not
     if (!ft_check_request_line(this->_method, this->_uri, this->_version))
-    {
-        std::cerr << "Invalid request line" << std::endl;
-        exit(1);
-    }
+        return (2);
     ft_find_query();
+    handleSpecialCharacters(this->_uri);
     // Parse the headers
     for (std::vector<std::string>::const_iterator it = lines.begin() + 1; it != lines.end(); ++it)
     {
@@ -136,99 +148,60 @@ void request::parse_request(std::string request)
         // Trim leading and trailing whitespaces from the value
         value.erase(0, value.find_first_not_of(" \t\r"));
         value.erase(value.find_last_not_of(" \t\r") + 1);
-        this->_headers[key] = value;
+        if (this->_headers.find(key) == this->_headers.end())
+            this->_headers[key] = value;
     }
-
     // function that checks if the request is POST or PUT to see if there is no content-length to return error
     if (ft_check_content_length() == false || ft_check_content_type() == false)
-    {
-        std::cerr << "Invalid Content-Length or Content-Type" << std::endl;
-        exit(1);
-    }
+        return (2);
     // function that checks if the header `connexion` exists or not
     int rtn = ft_check_connexion();
     if (rtn != 1)
-    {
-        if (rtn == 2)
-            std::cerr << "Invalid Connexion header" << std::endl;
-        else
-            std::cerr << "Missing Connexion header" << std::endl;
-        exit(1);
-    }
+        return (2);
 
     // function that will parse the port from the host 
     // and check if the host is valid or not
     if (this->get_header("Host") == "")
-    {
-        std::cerr << "Invalid Host header" << std::endl;
-        exit(1);
-    }
+        return (2);
     ft_parse_port(this->get_header("Host"));
-    ft_parse_language_charset();
 
     // Parse the request body
     std::string content_len_str = this->get_header("Content-Length");
-    if (!content_len_str.empty())
+    if (content_len_str != "")
     {
         size_t content_len = std::stoi(content_len_str);
-        this->_body = lines.back().substr(0, content_len);
-        // std::string transfer_encoding = this->get_header("Accept-Encoding");
-        // if (!transfer_encoding.empty())
-        // {
-        //     // using pointers to member functions to call the functions handlers
-        //     std::vector<std::string> encoding_types;
-        //     size_t startPos = 0;
-        //     size_t endPos = transfer_encoding.find(',');
-        //     while (endPos != std::string::npos)
-        //     {
-        //         encoding_types.push_back(transfer_encoding.substr(startPos, endPos - startPos));
-        //         startPos = endPos + 1;
-        //         endPos = transfer_encoding.find(',', startPos);
-        //     }
-        //     encoding_types.push_back(transfer_encoding.substr(startPos, endPos - startPos));
-        //     for (std::vector<std::string>::const_iterator it = encoding_types.begin(); it != encoding_types.end(); ++it)
-        //     {
-        //         std::string type_tmp = *it;
-        //         // Trim leading and trailing whitespaces from the value
-        //         // type_tmp.erase(0, type_tmp.find_first_not_of(" \t"));
-        //         // type_tmp.erase(type_tmp.find_first_not_of(" \t") + 1);
-        //         bool supported = false;
-        //         for (size_t i = 0; i < sizeof(handlers) / sizeof(handlers[0]); ++i)
-        //         {
-        //             if (type_tmp == supported_encodings[i])
-        //             {
-        //                 (this->*handlers[i])(this->_body);
-        //                 supported = true;
-        //                 break;
-        //             }
-        //         }
-        //         if (!supported)
-        //             std::cerr << "Unsupported encoding type: " << type_tmp << std::endl;
-        //     }
-            
-        // }
+        if (content_len > request.size())
+            return (2);
+        this->_body = request.substr(request.size() - content_len);
     }
     else
     {
-        if (this->_headers.find("Content-Length") != this->_headers.end() || this->_method == "POST" || this->_method == "PUT"
-            || this->_headers.find("Content-Type") != this->_headers.end())
-            {
-                std::cerr << "Body request is missing" << std::endl;
-                exit(1);
-            }
+        if (content_len_str == "" || this->_method == "POST")
+                return (2);
         
     }
-
-    // print_request();
+    return (0);
 }
 
-void    request::print_request()
+std::string request::get_boundary() const
 {
-    std::cout << "Method: " << this->_method << std::endl;
-    std::cout << "URI: " << this->_uri << std::endl;
-    std::cout << "Version: " << this->_version << std::endl;
-    std::cout << "Headers:" << std::endl;
-    for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
-        std::cout << it->first << ": " << it->second << std::endl;
-    std::cout << "Body: " << this->_body << std::endl;
+    return (this->_boundary);
+}
+
+// change the "%20" with a space
+void request::handleSpecialCharacters(std::string& uri) {
+    std::string encodedChars[] = {"%20", "%21", "%22", "%23", "%24", "%25", "%26", "%27", "%28", "%29", "%2A", "%2B", "%2C",
+                                    "%2D", "%2E", "%2F", "%3A", "%3B", "%3C", "%3D", "%3E", "%3F", "%40", "%5B", "%5C", "%5D",
+                                    "%5E", "%5F", "%60", "%7B", "%7C", "%7D", "%7E"};
+
+    std::string specialChars[] = {" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<",
+                                    "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"};
+
+    for (size_t i = 0; i < sizeof(encodedChars) / sizeof(encodedChars[0]); i++) {
+        std::string::size_type n = 0;
+        while ((n = uri.find(encodedChars[i], n)) != std::string::npos) {
+            uri.replace(n, encodedChars[i].length(), specialChars[i]);
+            n += 1;
+        }
+    }
 }

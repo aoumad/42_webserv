@@ -6,7 +6,7 @@
 /*   By: aoumad <aoumad@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/28 20:49:15 by aoumad            #+#    #+#             */
-/*   Updated: 2023/05/06 17:48:32 by aoumad           ###   ########.fr       */
+/*   Updated: 2023/05/24 15:10:20 by aoumad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <string>
 # include <map>
+# include <cstring>
 # include <vector>
 # include <iostream>
 # include <sstream>
@@ -33,12 +34,14 @@
 
 class server;
 class location;
+class request;
 
 class Respond
 {
     public:
         Respond();
-        Respond(request& req);
+        Respond(std::vector<server> server, int _index, bool rtn_error, request &req);
+        Respond(request& req, int index_);
         ~Respond();
 
         void set_http_version(std::string http_version);
@@ -49,7 +52,7 @@ class Respond
         void set_response_body(std::string body);
         std::string get_status_line(const std::string &status_code);
         void    set_date();
-        void    set_last_modified();
+        void    set_cache_control(std::string control);
 
         std::string get_http_version();
         int         get_status_code();
@@ -62,14 +65,17 @@ class Respond
         std::string get_document_root();
         std::string get_file_cgi();
         std::string get_path_info_founded();
+        int         ft_check_location_index(std::vector<server> server);
+        int         ft_check_server_index(std::vector<server> server);
         
         
         void print_respond();
+        std::string rtn_response();
 
-        void        response_root(std::vector<server> server);
+        std::string response_root(std::vector<server> server);
         std::string response_autoindex(request &r);
         std::string response_cgi(request &r);
-        int         ft_parse_location(std::vector<server> server);
+        int         ft_parse_location(std::vector<server> server, bool flag);
         int         exact_location(std::vector<server> server, std::string path);
         int         prefix_location(std::vector<server> server, std::string &path);
         int         dynamic_location(std::vector<server> server, std::string path);
@@ -81,24 +87,26 @@ class Respond
 
         // GET RESPONSE
         void        ft_handle_cgi();
-        void        ft_handle_file();
-        void        ft_handle_autoindex(std::vector<server> servers);
+        void        ft_handle_file(std::vector<server> server);
+        int         ft_handle_autoindex(std::vector<server> servers);
         void        ft_check_cgi();
         int         ft_check_file();
-        void        ft_handle_index(std::vector<server> servers);
-        void        ft_handle_index_2();
-        void        ft_show_autoindex();
+        int         ft_handle_index(std::vector<server> server);
+        int         ft_handle_index_2(std::vector<server> server, std::string index);
+        void        ft_show_autoindex(std::vector<server> server);
 
         // POST RESPONSE
         std::string check_post_type();
         void        handle_post_response(std::vector<server> server);
-        void        handle_form_data();
+        int         handle_form_data(std::vector<server> server);
         size_t      find_boundary(size_t pos);
-        FormData    read_form_data(size_t pos);
+        FormData    read_form_data(std::vector<server> servers, size_t pos);
         void        handle_urlencoded();
+        int         create_form_data();
 
         std::vector<FormData> _form_data;
         std::vector<Url_encoded> _url_decode;
+        void        handle_error_response(std::vector<server> server, int error_code);
     private:
         std::map<std::string, std::string> _headers;
         std::string _response_body;
@@ -118,25 +126,30 @@ class Respond
         std::string _cookie;
         std::string _path_info_founded;
         std::string _file_cgi;
+        std::string _cache_control;
+        std::string _mime_string;
+        static std::string _uri;
+        std::string _pur_uri;
+        static bool check_location;
+        bool        _rtn_error;
+        bool        _file_too_large;
 
         bool        _is_cgi;
         bool        _is_allowed_method;
         bool        _is_redirection;
         bool        _is_index;
+        bool        _last_boundary;
 
         void        handle_get_response(std::vector<server> servers);
-        void        print_response();
+        void        init_response_body(std::vector<server> server ,std::string file, std::string _root);
 
         request& r;
-        void        create_decode_files();
+        int         create_decode_files();
 
         // DELETE RESPONSE
-        void        handle_delete_response();
+        void        handle_delete_response(std::vector<server> server);
         // ERROR RESPONSE
-        void        handle_error_response(int error_code);
         void        ft_handle_error(int error_code);
-
-        // DELETE RESPONSE
 
         // void        cout_respond();
 
