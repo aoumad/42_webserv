@@ -44,7 +44,7 @@ And I'm one of that many programmers.
 - Error handling and appropriate status code responses.
 
 ## Installation
-- To use our code, go to this link where we have the whole code of HTTP/1.1 server and follow these steps:
+- To use our code, follow with me these steps:
 
 1 - Clone this repository to your local machine.
 
@@ -52,9 +52,9 @@ And I'm one of that many programmers.
 
 3 - Run the compiled server executable.
 
-4 - Go to POSTMAN or to the browser and test like 'http://localhost:8001/upload/' or any location you find in the configue file.
+4 - Go to POSTMAN or to the browser and test like 'http://localhost:8001/upload/' (just check the port the server is listening to and choose any of the locations in the server in the configuration file or modify it as you want)
 
-PS: check the location of the host if you got an error such as 'Bind system...'
+PS: check the ports and the IP of the host if you got an error such as 'Bind system...'
 
 ## HTTP Request
 
