@@ -7,6 +7,9 @@
 - [HTTP Request](#http-request)
 - [HTTP Response](#http-response)
 
+
+![alt text](https://github.com/aoumad/42_webserv/blob/main/images/results.png)
+
 > **Note**
 > Concerning the implementation of our own http server, it's a huge project and requires a lot of time. Thus i implemented it with two of my friends; this is why in this `sub-repo` i will only be responsible of explaining the part of project i was responsible of (which is parsing the request that comes from the client through the server and generate the response and send it back to the server so that it can be shown in the preview of the client). However we made a repo of the whole code [The root repo of this project](https://github.com/yismaili/webserv)
 
@@ -20,6 +23,8 @@ And I'm one of that many programmers.
 - In this project we will build an http server using CPP 98... pretty old version of C++ but don't worry it's more than enough to implement an awesome http server ;)
 
 ## An overview of HTTP
+
+![alt text](https://github.com/aoumad/42_webserv/blob/main/images/http%20communication.png)
 
 - HTTP is a protocol for fetching resources such as HTML documents. It is the foundation of any data exchange on the Web and it is a client-server protocol, which means requests are initialed by the recipient, usually the Web browser. A complete document is reconstructed from the different sub-documents fetched, for instance, text, layout description, images, videos, scripts and more.
 - As a `request-response` protocol, HTTP gives users a way to interact with web resources such as HTML files by transmitting hypertext messages between clients and servers.
@@ -52,6 +57,9 @@ And I'm one of that many programmers.
 PS: check the location of the host if you got an error such as 'Bind system...'
 
 ## HTTP Request
+
+![alt text](https://github.com/aoumad/42_webserv/blob/main/images/http_request_headers3.png)
+
 - When a client (browser) sends an HTTP request to the server; it get delivered to me throught the server as a string, so in my request folder my aim goals are the following:
 
 1- To parse each line of the request and put them in my `setters` of my class so that i can access them in my response class such as `uri`, `query`, `host`, `content length`, `content type`, `boundary`, `body of the request`...etc.
@@ -77,4 +85,11 @@ PS: I personally implemented `form-data` and `x-www-form-urlencoded` but if you 
 - Removes all the current representations of the target resource given by URI.
 
 ### Uri
-- The Request-URI is a Uniform Resource Identifier and identifies the resource upon which to apply the request. For example : `/cgi-bin/process.py` or `/upload/video.mp4
+- The Request-URI is a Uniform Resource Identifier and identifies the resource upon which to apply the request. For example : `/cgi-bin/process.py` or `/upload/video.mp4`
+
+> **Note**
+> Concerning the body request, it must exists when the http method is `POST`, otherwise you can ignore or pass a bad request in case you got a request body in `DELETE` or in `GET` (Something depends on your logic, i personally ignored it), Otherwise it is neccessary to get the request body in `POST` as well as to have `Content-Type` && `Content-Length` headers in this method too.
+
+## HTTP Response
+
+![alt text](https://github.com/aoumad/42_webserv/blob/main/images/http_response.png)
