@@ -8,7 +8,7 @@
 - [HTTP Response](#http-response)
 
 > **Note**
-> Concerning the implementation of our own http server, it's a huge project and requires a lot of time. Thus i implemented it with two of my friends; this is why in this `sub-repo` i will only be responsible of explaining the part of project i was responsible of (which is parsing the request that comes from the client through the server and generate the response and send it back to the server so that it can be shown in the preview of the client). However we made a repo of the whole code (soon here)
+> Concerning the implementation of our own http server, it's a huge project and requires a lot of time. Thus i implemented it with two of my friends; this is why in this `sub-repo` i will only be responsible of explaining the part of project i was responsible of (which is parsing the request that comes from the client through the server and generate the response and send it back to the server so that it can be shown in the preview of the client). However we made a repo of the whole code [The root repo of this project](https://github.com/yismaili/webserv)
 
 ## Where do we start from?
 
@@ -52,3 +52,29 @@ And I'm one of that many programmers.
 PS: check the location of the host if you got an error such as 'Bind system...'
 
 ## HTTP Request
+- When a client (browser) sends an HTTP request to the server; it get delivered to me throught the server as a string, so in my request folder my aim goals are the following:
+
+1- To parse each line of the request and put them in my `setters` of my class so that i can access them in my response class such as `uri`, `query`, `host`, `content length`, `content type`, `boundary`, `body of the request`...etc.
+
+2- to call an assignement constructor of the response that sent back to the server a `bad request` with `400` in the status code in case of a unwanted request such as different version of an HTTP that we working for or in case of sending the `content length` and the `encoding-type` such as `chunked`... and so on
+
+### Request line
+- The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by space SP characters.
+
+### Request Method
+- The request method indicates the method to be performed on the resource identified by the given Request-URI. The method is case-sensitive and should always be mentioned in uppercase.
+- In our project we are obligated to implement `GET`, `POST`, `DELETE`. Therefore, if you found a method that you haven't implemented you need to to get back a response with the status code `501` `Not implemented`.
+
+### GET
+- The GET method is used to retrieve information from the given server using a given URI. Requests using GET should only retrieve data and should have no other effect on the data.
+
+### POST
+- A POST request is used to send data to the server, for example, customer information, file upload, etc. using HTML forms.
+- There are several `post types` such as `form-data`, `raw`, `x-www-form-urlencoded` (decode files), `binary`...etc.
+PS: I personally implemented `form-data` and `x-www-form-urlencoded` but if you implemented the first one is enough.
+
+###  DELETE
+- Removes all the current representations of the target resource given by URI.
+
+### Uri
+- The Request-URI is a Uniform Resource Identifier and identifies the resource upon which to apply the request. For example : `/cgi-bin/process.py` or `/upload/video.mp4
